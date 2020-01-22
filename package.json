@@ -7,10 +7,14 @@
   "license": "MIT",
   "scripts": {
     "build:clean": "find ./bin -name '*.js' -or -name '*.js.map' -type f -delete",
-    "build": "yarn build:clean && webpack"
+    "build": "yarn build:clean && webpack",
+    "test": "jest --forceExit --verbose"
   },
   "devDependencies": {
+    "@types/jest": "^24.9.0",
     "@types/node": "^13.1.8",
+    "jest": "^25.0.0",
+    "ts-jest": "^24.3.0",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5",
