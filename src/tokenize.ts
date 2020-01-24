@@ -1,11 +1,17 @@
+import { isLetter, isWhitespace, isNumber, isQuote } from './identify'
 import {
-  isLetter,
-  isWhitespace,
-  isNumber,
-  // isParenthesis,
-  isQuote,
-} from './identify'
-import { Token, INT, PLUS } from './token'
+  Token,
+  INT,
+  PLUS,
+  ASSIGN,
+  LPAREN,
+  RPAREN,
+  LBRACE,
+  RBRACE,
+  COMMA,
+  SEMICOLON,
+  EOF,
+} from './token'
 
 export function tokenize (input: string): Token[] {
   const tokens: Token[] = []
@@ -14,16 +20,67 @@ export function tokenize (input: string): Token[] {
   while (cursor < input.length) {
     const ch = input[cursor]
 
-    // if (isParenthesis(ch)) {
-    //   tokens.push({
-    //     type: 'Parenthesis',
-    //     value: ch,
-    //   })
-    //   cursor++
-    //   continue
-    // }
-
     if (isWhitespace(ch)) {
+      cursor++
+      continue
+    }
+
+    if (ch === COMMA) {
+      tokens.push({
+        type: COMMA,
+        value: ',',
+      })
+
+      cursor++
+      continue
+    }
+
+    if (ch === SEMICOLON) {
+      tokens.push({
+        type: SEMICOLON,
+        value: ';',
+      })
+
+      cursor++
+      continue
+    }
+
+    if (ch === LPAREN) {
+      tokens.push({
+        type: LPAREN,
+        value: '(',
+      })
+
+      cursor++
+      continue
+    }
+
+    if (ch === RPAREN) {
+      tokens.push({
+        type: RPAREN,
+        value: ')',
+      })
+
+      cursor++
+      continue
+    }
+
+    if (ch === LBRACE) {
+      tokens.push({
+        type: LBRACE,
+        value: '{',
+      })
+
+      cursor++
+      continue
+    }
+
+    if (ch === RBRACE) {
+      tokens.push({
+        type: RBRACE,
+        value: '}',
+      })
+
       cursor++
       continue
     }
@@ -59,7 +116,17 @@ export function tokenize (input: string): Token[] {
       continue
     }
 
-    if (ch === '+') {
+    if (ch === ASSIGN) {
+      tokens.push({
+        type: ASSIGN,
+        value: '=',
+      })
+
+      cursor++
+      continue
+    }
+
+    if (ch === PLUS) {
       tokens.push({
         type: PLUS,
         value: '+',
@@ -87,6 +154,11 @@ export function tokenize (input: string): Token[] {
 
     throw new Error(`${ch} is not valid`)
   }
+
+  tokens.push({
+    type: EOF,
+    value: '',
+  })
 
   return tokens
 }

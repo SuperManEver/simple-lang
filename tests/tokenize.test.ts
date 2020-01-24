@@ -1,5 +1,16 @@
 import tokenize from '../src/tokenize'
-import { INT, PLUS } from '../src/token'
+import {
+  INT,
+  PLUS,
+  ASSIGN,
+  LPAREN,
+  RPAREN,
+  LBRACE,
+  RBRACE,
+  COMMA,
+  SEMICOLON,
+  EOF,
+} from '../src/token'
 
 // TODO: input := `=+(){},;`
 
@@ -17,6 +28,56 @@ test('Tokenize 5 + 5', () => {
     {
       type: INT,
       value: '5',
+    },
+    {
+      type: EOF,
+      value: '',
+    },
+  ]
+
+  expect(tokenize(input)).toEqual(result)
+})
+
+test('Tokenize =+(){},;', () => {
+  const input = '=+(){},;'
+
+  const result = [
+    {
+      type: ASSIGN,
+      value: '=',
+    },
+    {
+      type: PLUS,
+      value: '+',
+    },
+
+    {
+      type: LPAREN,
+      value: '(',
+    },
+    {
+      type: RPAREN,
+      value: ')',
+    },
+    {
+      type: LBRACE,
+      value: '{',
+    },
+    {
+      type: RBRACE,
+      value: '}',
+    },
+    {
+      type: COMMA,
+      value: ',',
+    },
+    {
+      type: SEMICOLON,
+      value: ';',
+    },
+    {
+      type: EOF,
+      value: '',
     },
   ]
 

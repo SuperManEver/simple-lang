@@ -2,6 +2,9 @@ export const LETTER = /[a-zA-Z]/
 export const WHITESPACE = /\s+/
 export const NUMBER = /^[0-9]+$/
 export const OPERATORS = ['+', '-', '*', '/', '%']
+export const DELIMETERS = [',', ';', '(', ')', '{', '}']
+
+export const isDelimeter = (ch: string) => DELIMETERS.includes(ch)
 
 export const isLetter = (character: string) => LETTER.test(character)
 
