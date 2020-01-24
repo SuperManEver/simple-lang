@@ -1,29 +1,26 @@
-import { tokenize } from '../src/tokenize'
+import tokenize from '../src/tokenize'
+import { INT, PLUS } from '../src/token'
 
-test('test', () => {
-  const input = 'hello'
-
-  expect(tokenize(input)).toBe(input)
-})
+// TODO: input := `=+(){},;`
 
 test('Tokenize 5 + 5', () => {
   const input = '5 + 5'
   const result = [
     {
-      type: 'Number',
-      value: 5,
+      type: INT,
+      value: '5',
     },
     {
-      type: 'Operator',
+      type: PLUS,
       value: '+',
     },
     {
-      type: 'Number',
-      value: 5,
+      type: INT,
+      value: '5',
     },
   ]
 
-  expect(tokenize(input)).toBe(result)
+  expect(tokenize(input)).toEqual(result)
 })
 
 // xdescribe(tokenize, () => {

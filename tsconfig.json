@@ -8,8 +8,11 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "bin",
-    "baseUrl": ".",
+    "baseUrl": "src",
     "paths": {
+      "token": [
+        "src/token"
+      ],
       "*": [
         "node_modules/*",
         "src/types/*"
