@@ -11,6 +11,8 @@ import {
   COMMA,
   SEMICOLON,
   EOF,
+  LET,
+  IDENT,
 } from './token'
 
 export function tokenize (input: string): Token[] {
@@ -97,7 +99,6 @@ export function tokenize (input: string): Token[] {
         value: number,
       })
 
-      // cursor++1
       continue
     }
 
@@ -108,8 +109,17 @@ export function tokenize (input: string): Token[] {
         symbol += input[cursor]
       }
 
+      if (symbol === 'let') {
+        tokens.push({
+          type: LET,
+          value: 'let',
+        })
+
+        continue
+      }
+
       tokens.push({
-        type: 'Name',
+        type: IDENT,
         value: symbol,
       })
 
