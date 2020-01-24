@@ -12,6 +12,7 @@ import {
   EOF,
   LET,
   IDENT,
+  FUNCTION,
 } from '../src/token'
 
 // TODO: input := `=+(){},;`
@@ -86,8 +87,7 @@ test('Tokenize =+(){},;', () => {
   expect(tokenize(input)).toEqual(result)
 })
 
-// input := `let five = 5;
-// let ten = 10;
+// input := `
 // let add = fn(x, y) {
 // x + y;
 // };
@@ -116,6 +116,80 @@ test('Tokenize let five = 5;', () => {
     {
       type: SEMICOLON,
       value: ';',
+    },
+    {
+      type: EOF,
+      value: '',
+    },
+  ]
+
+  expect(tokenize(input)).toEqual(result)
+})
+
+test('Tokenize: function expression & evaluation', () => {
+  // let result = add(2, 3)
+
+  const input = `
+  let add = fn(x, y) {
+    x + y
+  }
+  `
+  const result = [
+    {
+      type: LET,
+      value: 'let',
+    },
+    {
+      type: IDENT,
+      value: 'add',
+    },
+    {
+      type: ASSIGN,
+      value: '=',
+    },
+    {
+      type: FUNCTION,
+      value: 'fn',
+    },
+    {
+      type: LPAREN,
+      value: '(',
+    },
+    {
+      type: IDENT,
+      value: 'x',
+    },
+    {
+      type: COMMA,
+      value: ',',
+    },
+    {
+      type: IDENT,
+      value: 'y',
+    },
+    {
+      type: RPAREN,
+      value: ')',
+    },
+    {
+      type: LBRACE,
+      value: '{',
+    },
+    {
+      type: IDENT,
+      value: 'x',
+    },
+    {
+      type: PLUS,
+      value: '+',
+    },
+    {
+      type: IDENT,
+      value: 'y',
+    },
+    {
+      type: RBRACE,
+      value: '}',
     },
     {
       type: EOF,

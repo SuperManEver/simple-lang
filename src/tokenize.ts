@@ -13,6 +13,7 @@ import {
   EOF,
   LET,
   IDENT,
+  FUNCTION,
 } from './token'
 
 export function tokenize (input: string): Token[] {
@@ -107,6 +108,15 @@ export function tokenize (input: string): Token[] {
 
       while (isLetter(input[++cursor])) {
         symbol += input[cursor]
+      }
+
+      if (symbol === 'fn') {
+        tokens.push({
+          type: FUNCTION,
+          value: 'fn',
+        })
+
+        continue
       }
 
       if (symbol === 'let') {
