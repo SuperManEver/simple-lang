@@ -199,3 +199,51 @@ test('Tokenize: function expression & evaluation', () => {
 
   expect(tokenize(input)).toEqual(result)
 })
+
+test('Tokenize call expression', () => {
+  const input = 'let result = add(2, 3)'
+  const result = [
+    {
+      type: LET,
+      value: 'let',
+    },
+    {
+      type: IDENT,
+      value: 'result',
+    },
+    {
+      type: ASSIGN,
+      value: '=',
+    },
+    {
+      type: IDENT,
+      value: 'add',
+    },
+    {
+      type: LPAREN,
+      value: '(',
+    },
+    {
+      type: INT,
+      value: '2',
+    },
+    {
+      type: COMMA,
+      value: ',',
+    },
+    {
+      type: INT,
+      value: '3',
+    },
+    {
+      type: RPAREN,
+      value: ')',
+    },
+    {
+      type: EOF,
+      value: '',
+    },
+  ]
+
+  expect(tokenize(input)).toEqual(result)
+})
