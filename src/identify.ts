@@ -1,9 +1,24 @@
+import { LT, GT, ASSIGN, EQ, NOT_EQ } from './token'
+
 export const LETTER = /[a-zA-Z]/
 export const WHITESPACE = /\s+/
 export const NUMBER = /^[0-9]+$/
 export const OPERATORS = ['+', '-', '*', '/', '%']
 export const DELIMETERS = [',', ';', '(', ')', '{', '}']
 export const KEYWORDS = ['fn', 'let']
+export const COMPARISON = ['<', '>', '=', '==', '!=', '!']
+
+export const comparisonType: {
+  [k: string]: string | undefined
+} = {
+  '<': LT,
+  '>': GT,
+  '=': ASSIGN,
+  '==': EQ,
+  '!=': NOT_EQ,
+}
+
+export const isComparison = (ch: string) => COMPARISON.includes(ch)
 
 export const isKeyword = (ch: string) => KEYWORDS.includes(ch)
 

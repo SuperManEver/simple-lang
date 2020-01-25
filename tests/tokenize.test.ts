@@ -13,6 +13,10 @@ import {
   LET,
   IDENT,
   FUNCTION,
+  LT,
+  GT,
+  EQ,
+  NOT_EQ,
 } from '../src/token'
 
 // TODO: input := `=+(){},;`
@@ -274,6 +278,90 @@ test('Tokenize call expression', () => {
     {
       type: RPAREN,
       value: ')',
+    },
+    {
+      type: EOF,
+      value: '',
+    },
+  ]
+
+  expect(tokenize(input)).toEqual(result)
+})
+
+test('Tokenize lower & greater', () => {
+  const input = '5 < 10 > 5;'
+  const result = [
+    {
+      type: INT,
+      value: '5',
+    },
+    {
+      type: LT,
+      value: '<',
+    },
+    {
+      type: INT,
+      value: '10',
+    },
+    {
+      type: GT,
+      value: '>',
+    },
+    {
+      type: INT,
+      value: '5',
+    },
+    {
+      type: SEMICOLON,
+      value: ';',
+    },
+    {
+      type: EOF,
+      value: '',
+    },
+  ]
+
+  expect(tokenize(input)).toEqual(result)
+})
+
+test('Tokenize EQ', () => {
+  const input = '5 == 5'
+  const result = [
+    {
+      type: INT,
+      value: '5',
+    },
+    {
+      type: EQ,
+      value: '==',
+    },
+    {
+      type: INT,
+      value: '5',
+    },
+    {
+      type: EOF,
+      value: '',
+    },
+  ]
+
+  expect(tokenize(input)).toEqual(result)
+})
+
+test('Tokenize NOT EQ', () => {
+  const input = '5 != 5'
+  const result = [
+    {
+      type: INT,
+      value: '5',
+    },
+    {
+      type: NOT_EQ,
+      value: '!=',
+    },
+    {
+      type: INT,
+      value: '5',
     },
     {
       type: EOF,

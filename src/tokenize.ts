@@ -4,6 +4,8 @@ import {
   isNumber,
   isQuote,
   isKeyword,
+  isComparison,
+  comparisonType,
 } from './identify'
 import {
   Token,
@@ -36,6 +38,42 @@ export function tokenize (input: string): Token[] {
 
     if (isWhitespace(ch)) {
       cursor++
+      continue
+    }
+
+    if (isComparison(ch)) {
+      let val = ch
+
+      while (isComparison(input[++cursor])) {
+        val += input[cursor]
+      }
+
+      const type = comparisonType[val]
+
+      if (type) {
+        tokens.push({
+          type: type,
+          value: val,
+        })
+      } else {
+        throw new Error(`Unrecognized token provided ${val}`)
+      }
+
+      continue
+    }
+
+    if (isNumber(ch)) {
+      let number = ch
+
+      while (isNumber(input[++cursor])) {
+        number += input[cursor]
+      }
+
+      tokens.push({
+        type: INT,
+        value: number,
+      })
+
       continue
     }
 
@@ -99,21 +137,6 @@ export function tokenize (input: string): Token[] {
       continue
     }
 
-    if (isNumber(ch)) {
-      let number = ch
-
-      while (isNumber(input[++cursor])) {
-        number += input[cursor]
-      }
-
-      tokens.push({
-        type: INT,
-        value: number,
-      })
-
-      continue
-    }
-
     if (isLetter(ch)) {
       let symbol = ch
 
@@ -139,16 +162,6 @@ export function tokenize (input: string): Token[] {
         value: symbol,
       })
 
-      continue
-    }
-
-    if (ch === ASSIGN) {
-      tokens.push({
-        type: ASSIGN,
-        value: '=',
-      })
-
-      cursor++
       continue
     }
 
