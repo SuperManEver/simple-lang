@@ -1,4 +1,10 @@
-import { isLetter, isWhitespace, isNumber, isQuote } from './identify'
+import {
+  isLetter,
+  isWhitespace,
+  isNumber,
+  isQuote,
+  isKeyword,
+} from './identify'
 import {
   Token,
   INT,
@@ -15,6 +21,11 @@ import {
   IDENT,
   FUNCTION,
 } from './token'
+
+const keywords: { [k: string]: string | undefined } = {
+  fn: FUNCTION,
+  let: LET,
+}
 
 export function tokenize (input: string): Token[] {
   const tokens: Token[] = []
@@ -110,22 +121,17 @@ export function tokenize (input: string): Token[] {
         symbol += input[cursor]
       }
 
-      if (symbol === 'fn') {
-        tokens.push({
-          type: FUNCTION,
-          value: 'fn',
-        })
+      if (isKeyword(symbol)) {
+        const keyword = keywords[symbol]
 
-        continue
-      }
+        if (keyword) {
+          tokens.push({
+            type: keyword,
+            value: symbol,
+          })
 
-      if (symbol === 'let') {
-        tokens.push({
-          type: LET,
-          value: 'let',
-        })
-
-        continue
+          continue
+        }
       }
 
       tokens.push({

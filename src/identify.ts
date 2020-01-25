@@ -3,6 +3,9 @@ export const WHITESPACE = /\s+/
 export const NUMBER = /^[0-9]+$/
 export const OPERATORS = ['+', '-', '*', '/', '%']
 export const DELIMETERS = [',', ';', '(', ')', '{', '}']
+export const KEYWORDS = ['fn', 'let']
+
+export const isKeyword = (ch: string) => KEYWORDS.includes(ch)
 
 export const isDelimeter = (ch: string) => DELIMETERS.includes(ch)
 
