@@ -17,6 +17,9 @@ import {
   GT,
   EQ,
   NOT_EQ,
+  IF,
+  RETURN,
+  TRUE,
 } from '../src/token'
 
 // TODO: input := `=+(){},;`
@@ -362,6 +365,67 @@ test('Tokenize NOT EQ', () => {
     {
       type: INT,
       value: '5',
+    },
+    {
+      type: EOF,
+      value: '',
+    },
+  ]
+
+  expect(tokenize(input)).toEqual(result)
+})
+
+test('if/else exp', () => {
+  const input = `
+  if (5 < 10) {
+    return true;
+  }
+  `
+
+  const result = [
+    {
+      type: IF,
+      value: 'if',
+    },
+    {
+      type: LPAREN,
+      value: '(',
+    },
+    {
+      type: INT,
+      value: '5',
+    },
+    {
+      type: LT,
+      value: '<',
+    },
+    {
+      type: INT,
+      value: '10',
+    },
+    {
+      type: RPAREN,
+      value: ')',
+    },
+    {
+      type: LBRACE,
+      value: '{',
+    },
+    {
+      type: RETURN,
+      value: 'return',
+    },
+    {
+      type: TRUE,
+      value: 'true',
+    },
+    {
+      type: SEMICOLON,
+      value: ';',
+    },
+    {
+      type: RBRACE,
+      value: '}',
     },
     {
       type: EOF,

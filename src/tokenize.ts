@@ -22,12 +22,8 @@ import {
   LET,
   IDENT,
   FUNCTION,
+  keywords,
 } from './token'
-
-const keywords: { [k: string]: string | undefined } = {
-  fn: FUNCTION,
-  let: LET,
-}
 
 export function tokenize (input: string): Token[] {
   const tokens: Token[] = []

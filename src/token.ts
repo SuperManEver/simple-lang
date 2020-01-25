@@ -36,3 +36,18 @@ export const NOT_EQ = '!='
 // Keywords
 export const FUNCTION = 'FUNCTION'
 export const LET = 'LET'
+export const TRUE = 'TRUE'
+export const FALSE = 'FALSE'
+export const IF = 'IF'
+export const ELSE = 'ELSE'
+export const RETURN = 'RETURN'
+
+export const keywords: { [k: string]: string | undefined } = {
+  fn: FUNCTION,
+  let: LET,
+  true: TRUE,
+  false: FALSE,
+  if: IF,
+  else: ELSE,
+  return: RETURN,
+}

@@ -5,7 +5,7 @@ export const WHITESPACE = /\s+/
 export const NUMBER = /^[0-9]+$/
 export const OPERATORS = ['+', '-', '*', '/', '%']
 export const DELIMETERS = [',', ';', '(', ')', '{', '}']
-export const KEYWORDS = ['fn', 'let']
+export const KEYWORDS = ['fn', 'let', 'true', 'false', 'if', 'else', 'return']
 export const COMPARISON = ['<', '>', '=', '==', '!=', '!']
 
 export const comparisonType: {
