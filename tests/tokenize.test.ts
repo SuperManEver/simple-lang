@@ -200,6 +200,40 @@ test('Tokenize: function expression & evaluation', () => {
   expect(tokenize(input)).toEqual(result)
 })
 
+test('Tokenize larger expressions', () => {
+  const input = 'let val = 15 + 28'
+  const result = [
+    {
+      type: LET,
+      value: 'let',
+    },
+    {
+      type: IDENT,
+      value: 'val',
+    },
+    {
+      type: ASSIGN,
+      value: '=',
+    },
+    {
+      type: INT,
+      value: '15',
+    },
+    {
+      type: PLUS,
+      value: '+',
+    },
+    {
+      type: 28,
+      value: '28',
+    },
+    {
+      type: EOF,
+      value: '',
+    },
+  ]
+})
+
 test('Tokenize call expression', () => {
   const input = 'let result = add(2, 3)'
   const result = [
