@@ -224,7 +224,7 @@ test('Tokenize larger expressions', () => {
       value: '+',
     },
     {
-      type: 28,
+      type: INT,
       value: '28',
     },
     {
@@ -232,6 +232,8 @@ test('Tokenize larger expressions', () => {
       value: '',
     },
   ]
+
+  expect(tokenize(input)).toEqual(result)
 })
 
 test('Tokenize call expression', () => {
