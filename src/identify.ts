@@ -1,4 +1,15 @@
-import { LT, GT, ASSIGN, EQ, NOT_EQ } from './token'
+import {
+  LT,
+  GT,
+  ASSIGN,
+  EQ,
+  NOT_EQ,
+  PLUS,
+  MINUS,
+  MULT,
+  DIVIDE,
+  MOD,
+} from './token'
 
 export const LETTER = /[a-zA-Z]/
 export const WHITESPACE = /\s+/
@@ -17,6 +28,18 @@ export const comparisonType: {
   '==': EQ,
   '!=': NOT_EQ,
 }
+
+export const operatorType: {
+  [k: string]: string | undefined
+} = {
+  '+': PLUS,
+  '-': MINUS,
+  '*': MULT,
+  '/': DIVIDE,
+  '%': MOD,
+}
+
+export const isOperator = (ch: string) => OPERATORS.includes(ch)
 
 export const isComparison = (ch: string) => COMPARISON.includes(ch)
 

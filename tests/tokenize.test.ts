@@ -20,6 +20,7 @@ import {
   IF,
   RETURN,
   TRUE,
+  MULT,
 } from '../src/token'
 
 // TODO: input := `=+(){},;`
@@ -365,6 +366,42 @@ test('Tokenize NOT EQ', () => {
     {
       type: INT,
       value: '5',
+    },
+    {
+      type: EOF,
+      value: '',
+    },
+  ]
+
+  expect(tokenize(input)).toEqual(result)
+})
+
+test('multiply', () => {
+  const input = 'let x = 12 * 3'
+  const result = [
+    {
+      type: LET,
+      value: 'let',
+    },
+    {
+      type: IDENT,
+      value: 'x',
+    },
+    {
+      type: ASSIGN,
+      value: '=',
+    },
+    {
+      type: INT,
+      value: '12',
+    },
+    {
+      type: MULT,
+      value: '*',
+    },
+    {
+      type: INT,
+      value: '3',
     },
     {
       type: EOF,

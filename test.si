@@ -1,0 +1,8 @@
+let x = 5
+let y = 17
+
+if (x > 10) {
+    return true
+}
+
+let res = x * y

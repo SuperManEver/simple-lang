@@ -11,6 +11,7 @@
     "test": "jest --forceExit --verbose"
   },
   "devDependencies": {
+    "@types/inquirer": "^6.5.0",
     "@types/jest": "^24.9.0",
     "@types/node": "^13.1.8",
     "jest": "^25.0.0",
@@ -20,5 +21,9 @@
     "typescript": "^3.7.5",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "inquirer": "^7.0.4"
   }
 }

@@ -6,6 +6,8 @@ import {
   isKeyword,
   isComparison,
   comparisonType,
+  isOperator,
+  operatorType,
 } from './identify'
 import {
   Token,
@@ -69,6 +71,21 @@ export function tokenize (input: string): Token[] {
         type: INT,
         value: number,
       })
+
+      continue
+    }
+
+    if (isOperator(ch)) {
+      let op = operatorType[ch]
+
+      if (op) {
+        tokens.push({
+          type: op,
+          value: ch,
+        })
+
+        cursor++
+      }
 
       continue
     }
