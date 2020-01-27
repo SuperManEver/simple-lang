@@ -1,4 +1,4 @@
-import { Token, LET } from './token'
+import { Token, LET, RETURN } from './token'
 
 interface INode {
   tokenLiteral: () => string
@@ -50,20 +50,28 @@ export class LetStatement implements Statement {
     return LET
   }
 
-  // get name (): Identifier {
-  //   return {
-  //     token: {
-  //       type: LET,
-  //       value: 'let',
-  //     },
-  //     value: this.ident,
-  //   }
-  // }
-
   get node (): INode {
     return {
       tokenLiteral () {
         return 'LetStatement'
+      },
+    }
+  }
+}
+
+// return <expression>;
+export class ReturnStatement implements Statement {
+  token: Token
+  returnValue: Expression
+
+  statementNode (): string {
+    return RETURN
+  }
+
+  get node (): INode {
+    return {
+      tokenLiteral () {
+        return 'ReturnStatement'
       },
     }
   }

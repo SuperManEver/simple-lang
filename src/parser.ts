@@ -1,5 +1,20 @@
-import { Program, Statement, LetStatement, Identifier } from './ast'
-import { Token, EOF, LET, TokenType, IDENT, ASSIGN, SEMICOLON } from './token'
+import {
+  Program,
+  Statement,
+  LetStatement,
+  Identifier,
+  ReturnStatement,
+} from './ast'
+import {
+  Token,
+  EOF,
+  LET,
+  TokenType,
+  IDENT,
+  ASSIGN,
+  SEMICOLON,
+  RETURN,
+} from './token'
 import Lexer from './lexer'
 
 class Parser {
@@ -39,6 +54,34 @@ class Parser {
     return program
   }
 
+  parseStatement (): Statement | null {
+    switch (this.curToken.type) {
+      case LET:
+        return this.parseLetStatement()
+
+      case RETURN:
+        return this.parseReturnStatement()
+
+      default:
+        return null
+    }
+  }
+
+  parseReturnStatement (): ReturnStatement {
+    const stmt = new ReturnStatement()
+
+    stmt.token = this.curToken
+
+    this.nextToken()
+    // TODO: We're skipping the expressions until we
+    // encounter a semicolon
+    while (!this.curTokenIs(SEMICOLON)) {
+      this.nextToken()
+    }
+
+    return stmt
+  }
+
   parseLetStatement (): LetStatement {
     const stmt = new LetStatement()
 
@@ -62,15 +105,6 @@ class Parser {
     }
 
     return stmt
-  }
-
-  parseStatement (): Statement | null {
-    switch (this.curToken.type) {
-      case LET:
-        return this.parseLetStatement()
-      default:
-        return null
-    }
   }
 
   curTokenIs (t: TokenType): boolean {
