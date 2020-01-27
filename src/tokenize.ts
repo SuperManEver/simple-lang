@@ -9,11 +9,11 @@ import {
   isOperator,
   operatorType,
 } from './identify'
+
 import {
   Token,
   INT,
   PLUS,
-  ASSIGN,
   LPAREN,
   RPAREN,
   LBRACE,
