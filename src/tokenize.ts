@@ -21,9 +21,7 @@ import {
   COMMA,
   SEMICOLON,
   EOF,
-  LET,
   IDENT,
-  FUNCTION,
   keywords,
 } from './token'
 

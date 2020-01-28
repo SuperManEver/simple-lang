@@ -2,6 +2,7 @@ import { Token, LET, RETURN } from './token'
 
 interface INode {
   tokenLiteral: () => string
+  toString(): string
 }
 
 export interface Statement {
@@ -9,7 +10,7 @@ export interface Statement {
   statementNode: () => void
 }
 
-type Expression = {
+export type Expression = {
   Node: INode
   expressionNode: () => void
 }
@@ -74,5 +75,19 @@ export class ReturnStatement implements Statement {
         return 'ReturnStatement'
       },
     }
+  }
+}
+
+export class ExpressionStatement implements Statement {
+  token: Token
+  expression: Expression
+  node: INode
+
+  statementNode (): string {
+    return 'ExpressionStatement'
+  }
+
+  tokenLiteral (): string {
+    return this.expression.Node.tokenLiteral()
   }
 }

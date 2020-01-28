@@ -4,7 +4,10 @@ import {
   LetStatement,
   Identifier,
   ReturnStatement,
+  Expression,
+  ExpressionStatement,
 } from './ast'
+
 import {
   Token,
   EOF,
@@ -17,11 +20,26 @@ import {
 } from './token'
 import Lexer from './lexer'
 
+type prefixParseFn = () => Expression
+type infixParseFn = (exp: Expression) => Expression
+
+enum Precendence {
+  LOWEST,
+  EQUALS,
+  LESSGREATER, // > or <
+  SUM, // +
+  PRODUCT, // *
+  PREFIX, // -X or !X
+  CALL, // myFunction(X)
+}
+
 class Parser {
   curToken: Token
   peekToken: Token
   lexer: Lexer
   errors: string[] = []
+  prefixParseFns: { [k: string]: prefixParseFn | undefined } = {}
+  infixParseFns: { [k: string]: infixParseFn | undefined } = {}
 
   constructor (input: string) {
     this.lexer = new Lexer(input)
@@ -63,8 +81,31 @@ class Parser {
         return this.parseReturnStatement()
 
       default:
-        return null
+        return this.parseExpressionStatement()
     }
+  }
+
+  parseExpressionStatement (): ExpressionStatement {
+    const stmt = new ExpressionStatement()
+    stmt.token = this.curToken
+
+    stmt.expression = this.parseExpression(Precendence.LOWEST)
+
+    if (this.peekTokenIs(SEMICOLON)) {
+      this.nextToken()
+    }
+    return stmt
+  }
+
+  parseExpression (precendence: number): Expression {
+    const prefix = this.prefixParseFns[this.curToken.type]
+
+    if (prefix === null) {
+      return null
+    }
+
+    const leftExp = prefix()
+    return leftExp
   }
 
   parseReturnStatement (): ReturnStatement {
@@ -73,6 +114,7 @@ class Parser {
     stmt.token = this.curToken
 
     this.nextToken()
+
     // TODO: We're skipping the expressions until we
     // encounter a semicolon
     while (!this.curTokenIs(SEMICOLON)) {
@@ -133,6 +175,14 @@ class Parser {
 
   addError (msg: string) {
     this.errors.push(msg)
+  }
+
+  registerPrefix (tokenType: TokenType, fn: prefixParseFn) {
+    this.prefixParseFns[tokenType] = fn
+  }
+
+  registerInfix (tokenType: TokenType, fn: infixParseFn) {
+    this.infixParseFns[tokenType] = fn
   }
 }
 
