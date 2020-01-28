@@ -9,12 +9,13 @@ import {
   MULT,
   DIVIDE,
   MOD,
+  BANG,
 } from './token'
 
 export const LETTER = /[a-zA-Z]/
 export const WHITESPACE = /\s+/
 export const NUMBER = /^[0-9]+$/
-export const OPERATORS = ['+', '-', '*', '/', '%']
+export const OPERATORS = ['+', '-', '*', '/', '%', '!']
 export const DELIMETERS = [',', ';', '(', ')', '{', '}']
 export const KEYWORDS = ['fn', 'let', 'true', 'false', 'if', 'else', 'return']
 export const COMPARISON = ['<', '>', '=', '==', '!=', '!']
@@ -27,6 +28,7 @@ export const comparisonType: {
   '=': ASSIGN,
   '==': EQ,
   '!=': NOT_EQ,
+  '!': BANG,
 }
 
 export const operatorType: {
@@ -37,6 +39,7 @@ export const operatorType: {
   '*': MULT,
   '/': DIVIDE,
   '%': MOD,
+  '!': BANG,
 }
 
 export const isOperator = (ch: string) => OPERATORS.includes(ch)

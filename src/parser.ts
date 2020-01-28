@@ -10,6 +10,7 @@ import {
   Expression,
   ExpressionStatement,
   IntegerLiteral,
+  PrefixExpression,
 } from './ast'
 
 import {
@@ -22,6 +23,8 @@ import {
   SEMICOLON,
   RETURN,
   INT,
+  BANG,
+  MINUS,
 } from './token'
 import Lexer from './lexer'
 
@@ -51,6 +54,8 @@ class Parser {
 
     this.registerPrefix(IDENT, this.parseIdentifier)
     this.registerPrefix(INT, this.parseIntegerLiteral)
+    this.registerPrefix(BANG, this.parsePrefixExpression)
+    this.registerPrefix(MINUS, this.parsePrefixExpression)
 
     this.nextToken()
     this.nextToken()
@@ -105,6 +110,22 @@ class Parser {
     return stmt
   }
 
+  @bind
+  parsePrefixExpression(): Expression {
+    const expression = new PrefixExpression(this.curToken, this.curToken.value)
+
+    this.nextToken()
+
+    expression.right = this.parseExpression(Precendence.PREFIX)
+
+    return expression
+  }
+
+  noPrefixParseFnError(token: Token) {
+    const msg = `no prefix parse function for ${token.value} found`
+    this.addError(msg)
+  }
+
   parseExpression(precendence: number): Expression {
     const prefix = this.prefixParseFns[this.curToken.type]
 
@@ -113,6 +134,7 @@ class Parser {
       return leftExp
     }
 
+    this.noPrefixParseFnError(this.curToken)
     return null
   }
 

@@ -120,3 +120,28 @@ export class IntegerLiteral implements Expression {
     }
   }
 }
+
+export class PrefixExpression implements Expression {
+  token: Token
+  operator: string
+  right: Expression
+
+  constructor(token: Token, operator: string) {
+    this.token = token
+    this.operator = operator
+  }
+
+  expressionNode() {}
+
+  TokenLiteral() {
+    return this.token.value
+  }
+
+  get node(): INode {
+    return {
+      tokenLiteral() {
+        return 'PrefixExpression'
+      },
+    }
+  }
+}
