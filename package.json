@@ -13,6 +13,7 @@
   "devDependencies": {
     "@types/inquirer": "^6.5.0",
     "@types/jest": "^24.9.0",
+    "@types/lodash": "^4.14.149",
     "@types/node": "^13.1.8",
     "jest": "^25.0.0",
     "ts-jest": "^24.3.0",
@@ -24,6 +25,8 @@
   },
   "dependencies": {
     "chalk": "^3.0.0",
-    "inquirer": "^7.0.4"
+    "decko": "^1.2.0",
+    "inquirer": "^7.0.4",
+    "lodash": "^4.17.15"
   }
 }

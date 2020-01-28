@@ -1,6 +1,6 @@
 import Parser from './src/parser'
 
-const input = 'let x = 5 + 5;'
+const input = 'let x = 5;'
 
 const p = new Parser(input)
 

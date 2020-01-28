@@ -22,7 +22,7 @@ interface IProgram {
 export class Program implements IProgram {
   statements: Statement[] = []
 
-  addStatement (st: Statement): void {
+  addStatement(st: Statement): void {
     this.statements.push(st)
   }
 }
@@ -36,20 +36,20 @@ export class Identifier implements IIdentifier {
   token: Token
   value: string
 
-  constructor ({ token, value }: { token: Token; value: string }) {
+  constructor({ token, value }: { token: Token; value: string }) {
     this.token = token
     this.value = value
   }
 
-  get node () {
+  get node() {
     return {
-      tokenLiteral () {
+      tokenLiteral() {
         return 'Identifier'
       },
     }
   }
 
-  expressionNode () {}
+  expressionNode() {}
 }
 
 export class LetStatement implements Statement {
@@ -57,13 +57,13 @@ export class LetStatement implements Statement {
   value: Expression
   name: IIdentifier
 
-  statementNode () {
+  statementNode() {
     return LET
   }
 
-  get node (): INode {
+  get node(): INode {
     return {
-      tokenLiteral () {
+      tokenLiteral() {
         return 'LetStatement'
       },
     }
@@ -75,13 +75,13 @@ export class ReturnStatement implements Statement {
   token: Token
   returnValue: Expression
 
-  statementNode (): string {
+  statementNode(): string {
     return RETURN
   }
 
-  get node (): INode {
+  get node(): INode {
     return {
-      tokenLiteral () {
+      tokenLiteral() {
         return 'ReturnStatement'
       },
     }
@@ -93,11 +93,30 @@ export class ExpressionStatement implements Statement {
   expression: Expression
   node: INode
 
-  statementNode (): string {
+  statementNode(): string {
     return 'ExpressionStatement'
   }
 
-  tokenLiteral (): string {
+  tokenLiteral(): string {
     return this.expression.node.tokenLiteral()
+  }
+}
+
+export class IntegerLiteral implements Expression {
+  token: Token
+  value: number
+
+  constructor(token: Token) {
+    this.token = token
+  }
+
+  expressionNode() {}
+
+  get node(): INode {
+    return {
+      tokenLiteral() {
+        return 'IntegerLiteral'
+      },
+    }
   }
 }

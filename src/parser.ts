@@ -1,3 +1,6 @@
+import { bind } from 'decko'
+import { isNaN } from 'lodash'
+
 import {
   Program,
   Statement,
@@ -6,6 +9,7 @@ import {
   ReturnStatement,
   Expression,
   ExpressionStatement,
+  IntegerLiteral,
 } from './ast'
 
 import {
@@ -17,6 +21,7 @@ import {
   ASSIGN,
   SEMICOLON,
   RETURN,
+  INT,
 } from './token'
 import Lexer from './lexer'
 
@@ -41,16 +46,17 @@ class Parser {
   prefixParseFns: { [k: string]: prefixParseFn | undefined } = {}
   infixParseFns: { [k: string]: infixParseFn | undefined } = {}
 
-  constructor (input: string) {
+  constructor(input: string) {
     this.lexer = new Lexer(input)
 
     this.registerPrefix(IDENT, this.parseIdentifier)
+    this.registerPrefix(INT, this.parseIntegerLiteral)
 
     this.nextToken()
     this.nextToken()
   }
 
-  nextToken (): void {
+  nextToken(): void {
     this.curToken = this.peekToken
 
     if (this.lexer.hasMoreTokens()) {
@@ -58,7 +64,7 @@ class Parser {
     }
   }
 
-  parseProgram (): Program | null {
+  parseProgram(): Program | null {
     const program = new Program()
 
     while (!this.curTokenIs(EOF)) {
@@ -74,7 +80,7 @@ class Parser {
     return program
   }
 
-  parseStatement (): Statement | null {
+  parseStatement(): Statement | null {
     switch (this.curToken.type) {
       case LET:
         return this.parseLetStatement()
@@ -87,7 +93,7 @@ class Parser {
     }
   }
 
-  parseExpressionStatement (): ExpressionStatement {
+  parseExpressionStatement(): ExpressionStatement {
     const stmt = new ExpressionStatement()
     stmt.token = this.curToken
 
@@ -99,7 +105,7 @@ class Parser {
     return stmt
   }
 
-  parseExpression (precendence: number): Expression {
+  parseExpression(precendence: number): Expression {
     const prefix = this.prefixParseFns[this.curToken.type]
 
     if (prefix) {
@@ -110,7 +116,7 @@ class Parser {
     return null
   }
 
-  parseReturnStatement (): ReturnStatement {
+  parseReturnStatement(): ReturnStatement {
     const stmt = new ReturnStatement()
 
     stmt.token = this.curToken
@@ -130,7 +136,23 @@ class Parser {
     return new Identifier({ token: this.curToken, value: this.curToken.value })
   }
 
-  parseLetStatement (): LetStatement {
+  @bind
+  parseIntegerLiteral(): Expression {
+    const lit = new IntegerLiteral(this.curToken)
+
+    const val: number = parseInt(this.curToken.value, 10)
+
+    if (isNaN(val)) {
+      this.addError(`could not parse ${this.curToken.value} as integer`)
+      return null
+    }
+
+    lit.value = val
+
+    return lit
+  }
+
+  parseLetStatement(): LetStatement {
     const stmt = new LetStatement()
 
     if (!this.expectPeek(IDENT)) {
@@ -148,22 +170,22 @@ class Parser {
 
     // TODO: We're skipping the expressions until we
     // encounter a semicolon
-    while (!this.curTokenIs(SEMICOLON)) {
-      this.nextToken()
-    }
+    // while (!this.curTokenIs(SEMICOLON)) {
+    //   this.nextToken()
+    // }
 
     return stmt
   }
 
-  curTokenIs (t: TokenType): boolean {
+  curTokenIs(t: TokenType): boolean {
     return this.curToken.type === t
   }
 
-  peekTokenIs (t: TokenType): boolean {
+  peekTokenIs(t: TokenType): boolean {
     return this.peekToken.type === t
   }
 
-  expectPeek (t: TokenType): boolean {
+  expectPeek(t: TokenType): boolean {
     if (this.peekTokenIs(t)) {
       this.nextToken()
       return true
@@ -173,21 +195,21 @@ class Parser {
     }
   }
 
-  peekError (t: TokenType): void {
+  peekError(t: TokenType): void {
     const msg = `expected next token to be ${t}, got ${this.peekToken.type} instead`
 
     this.addError(msg)
   }
 
-  addError (msg: string) {
+  addError(msg: string) {
     this.errors.push(msg)
   }
 
-  registerPrefix (tokenType: TokenType, fn: prefixParseFn) {
+  registerPrefix(tokenType: TokenType, fn: prefixParseFn) {
     this.prefixParseFns[tokenType] = fn
   }
 
-  registerInfix (tokenType: TokenType, fn: infixParseFn) {
+  registerInfix(tokenType: TokenType, fn: infixParseFn) {
     this.infixParseFns[tokenType] = fn
   }
 }
