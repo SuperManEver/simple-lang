@@ -11,7 +11,7 @@ export interface Statement {
 }
 
 export type Expression = {
-  Node: INode
+  node: INode
   expressionNode: () => void
 }
 
@@ -27,7 +27,7 @@ export class Program implements IProgram {
   }
 }
 
-interface IIdentifier {
+interface IIdentifier extends Expression {
   token: Token
   value: string
 }
@@ -40,6 +40,16 @@ export class Identifier implements IIdentifier {
     this.token = token
     this.value = value
   }
+
+  get node () {
+    return {
+      tokenLiteral () {
+        return 'Identifier'
+      },
+    }
+  }
+
+  expressionNode () {}
 }
 
 export class LetStatement implements Statement {
@@ -88,6 +98,6 @@ export class ExpressionStatement implements Statement {
   }
 
   tokenLiteral (): string {
-    return this.expression.Node.tokenLiteral()
+    return this.expression.node.tokenLiteral()
   }
 }

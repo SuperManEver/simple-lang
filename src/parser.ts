@@ -44,6 +44,8 @@ class Parser {
   constructor (input: string) {
     this.lexer = new Lexer(input)
 
+    this.registerPrefix(IDENT, this.parseIdentifier)
+
     this.nextToken()
     this.nextToken()
   }
@@ -100,12 +102,12 @@ class Parser {
   parseExpression (precendence: number): Expression {
     const prefix = this.prefixParseFns[this.curToken.type]
 
-    if (prefix === null) {
-      return null
+    if (prefix) {
+      const leftExp = prefix()
+      return leftExp
     }
 
-    const leftExp = prefix()
-    return leftExp
+    return null
   }
 
   parseReturnStatement (): ReturnStatement {
@@ -122,6 +124,10 @@ class Parser {
     }
 
     return stmt
+  }
+
+  parseIdentifier = (): Expression => {
+    return new Identifier({ token: this.curToken, value: this.curToken.value })
   }
 
   parseLetStatement (): LetStatement {
