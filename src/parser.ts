@@ -50,14 +50,14 @@ enum Precendence {
 }
 
 const PRECEDENCES: { [k: string]: number } = {
-  EQ: Precendence.EQUALS,
-  NOT_EQ: Precendence.EQUALS,
-  LT: Precendence.LESSGREATER,
-  GT: Precendence.LESSGREATER,
-  PLUS: Precendence.SUM,
-  MINUS: Precendence.SUM,
-  SLASH: Precendence.PRODUCT,
-  ASTERISK: Precendence.PRODUCT,
+  [EQ]: Precendence.EQUALS,
+  [NOT_EQ]: Precendence.EQUALS,
+  [LT]: Precendence.LESSGREATER,
+  [GT]: Precendence.LESSGREATER,
+  [PLUS]: Precendence.SUM,
+  [MINUS]: Precendence.SUM,
+  [DIVIDE]: Precendence.PRODUCT,
+  [MULT]: Precendence.PRODUCT,
 }
 
 class Parser {

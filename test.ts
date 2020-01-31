@@ -11,7 +11,7 @@ import Parser from './src/parser'
 5 != 5;
 */
 
-const input = 'let x = a + b * c + d / e - f;'
+const input = '5 + 3 * 7;'
 
 const p = new Parser(input)
 
