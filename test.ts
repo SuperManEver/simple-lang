@@ -11,7 +11,7 @@ import Parser from './src/parser'
 5 != 5;
 */
 
-const input = 'if (x < y) { x * 19 } else { let result = y - 17 };'
+const input = 'fn(x, y) { x + y; }'
 
 const p = new Parser(input)
 

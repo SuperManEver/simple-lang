@@ -228,3 +228,27 @@ export class IfExpression implements Expression {
     }
   }
 }
+
+export class FunctionLiteral implements Expression {
+  token: Token // The 'fn' token
+  parameters: Identifier[] = []
+  body: BlockStatement
+
+  constructor (token: Token) {
+    this.token = token
+  }
+
+  expressionNode () {}
+
+  TokenLiteral (): string {
+    return this.token.value
+  }
+
+  get node (): INode {
+    return {
+      tokenLiteral () {
+        return 'FunctionLiteral'
+      },
+    }
+  }
+}

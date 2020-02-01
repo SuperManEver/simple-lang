@@ -15,6 +15,7 @@ import {
   BooleanExpression,
   IfExpression,
   BlockStatement,
+  FunctionLiteral,
 } from './ast'
 
 import {
@@ -44,6 +45,8 @@ import {
   LBRACE,
   RBRACE,
   ELSE,
+  FUNCTION,
+  COMMA,
 } from './token'
 import Lexer from './lexer'
 
@@ -86,6 +89,11 @@ class Parser {
     this.registerPrefix(INT, this.parseIntegerLiteral)
     this.registerPrefix(BANG, this.parsePrefixExpression)
     this.registerPrefix(MINUS, this.parsePrefixExpression)
+    this.registerPrefix(FUNCTION, this.parseFunctionLiteral)
+    this.registerPrefix(TRUE, this.parseBoolean)
+    this.registerPrefix(FALSE, this.parseBoolean)
+    this.registerPrefix(LPAREN, this.parseGroupedExpression)
+    this.registerPrefix(IF, this.parseIfExpression)
 
     this.registerInfix(PLUS, this.parseInfixExpression)
     this.registerInfix(MINUS, this.parseInfixExpression)
@@ -95,10 +103,6 @@ class Parser {
     this.registerInfix(NOT_EQ, this.parseInfixExpression)
     this.registerInfix(LT, this.parseInfixExpression)
     this.registerInfix(GT, this.parseInfixExpression)
-    this.registerPrefix(TRUE, this.parseBoolean)
-    this.registerPrefix(FALSE, this.parseBoolean)
-    this.registerPrefix(LPAREN, this.parseGroupedExpression)
-    this.registerPrefix(IF, this.parseIfExpression)
 
     this.nextToken()
     this.nextToken()
@@ -236,6 +240,61 @@ class Parser {
     }
 
     return block
+  }
+
+  @bind
+  parseFunctionLiteral (): Expression {
+    const lit = new FunctionLiteral(this.curToken)
+
+    if (!this.expectPeek(LPAREN)) {
+      return null
+    }
+
+    lit.parameters = this.parseFunctionParameters()
+
+    if (!this.expectPeek(LBRACE)) {
+      return null
+    }
+
+    lit.body = this.parseBlockStatement()
+
+    return lit
+  }
+
+  @bind
+  parseFunctionParameters (): Identifier[] {
+    const identifiers: Identifier[] = []
+
+    if (this.peekTokenIs(RPAREN)) {
+      this.nextToken()
+      return identifiers
+    }
+
+    this.nextToken()
+
+    const ident = new Identifier({
+      token: this.curToken,
+      value: this.curToken.value,
+    })
+    identifiers.push(ident)
+
+    while (this.peekTokenIs(COMMA)) {
+      this.nextToken()
+      this.nextToken()
+
+      const ident = new Identifier({
+        token: this.curToken,
+        value: this.curToken.type,
+      })
+
+      identifiers.push(ident)
+    }
+
+    if (!this.expectPeek(RPAREN)) {
+      return null
+    }
+
+    return identifiers
   }
 
   @bind
