@@ -22,7 +22,7 @@ interface IProgram {
 export class Program implements IProgram {
   statements: Statement[] = []
 
-  addStatement(st: Statement): void {
+  addStatement (st: Statement): void {
     this.statements.push(st)
   }
 }
@@ -36,20 +36,20 @@ export class Identifier implements IIdentifier {
   token: Token
   value: string
 
-  constructor({ token, value }: { token: Token; value: string }) {
+  constructor ({ token, value }: { token: Token; value: string }) {
     this.token = token
     this.value = value
   }
 
-  get node() {
+  get node () {
     return {
-      tokenLiteral() {
+      tokenLiteral () {
         return 'Identifier'
       },
     }
   }
 
-  expressionNode() {}
+  expressionNode () {}
 }
 
 export class LetStatement implements Statement {
@@ -57,13 +57,13 @@ export class LetStatement implements Statement {
   value: Expression
   name: IIdentifier
 
-  statementNode() {
+  statementNode () {
     return LET
   }
 
-  get node(): INode {
+  get node (): INode {
     return {
-      tokenLiteral() {
+      tokenLiteral () {
         return 'LetStatement'
       },
     }
@@ -75,13 +75,13 @@ export class ReturnStatement implements Statement {
   token: Token
   returnValue: Expression
 
-  statementNode(): string {
+  statementNode (): string {
     return RETURN
   }
 
-  get node(): INode {
+  get node (): INode {
     return {
-      tokenLiteral() {
+      tokenLiteral () {
         return 'ReturnStatement'
       },
     }
@@ -93,11 +93,11 @@ export class ExpressionStatement implements Statement {
   expression: Expression
   node: INode
 
-  statementNode(): string {
+  statementNode (): string {
     return 'ExpressionStatement'
   }
 
-  tokenLiteral(): string {
+  tokenLiteral (): string {
     return this.expression.node.tokenLiteral()
   }
 }
@@ -106,15 +106,15 @@ export class IntegerLiteral implements Expression {
   token: Token
   value: number
 
-  constructor(token: Token) {
+  constructor (token: Token) {
     this.token = token
   }
 
-  expressionNode() {}
+  expressionNode () {}
 
-  get node(): INode {
+  get node (): INode {
     return {
-      tokenLiteral() {
+      tokenLiteral () {
         return 'IntegerLiteral'
       },
     }
@@ -126,20 +126,20 @@ export class PrefixExpression implements Expression {
   operator: string
   right: Expression
 
-  constructor(token: Token, operator: string) {
+  constructor (token: Token, operator: string) {
     this.token = token
     this.operator = operator
   }
 
-  expressionNode() {}
+  expressionNode () {}
 
-  TokenLiteral() {
+  TokenLiteral () {
     return this.token.value
   }
 
-  get node(): INode {
+  get node (): INode {
     return {
-      tokenLiteral() {
+      tokenLiteral () {
         return 'PrefixExpression'
       },
     }
@@ -152,18 +152,42 @@ export class InfixExpression implements Expression {
   operator: string
   right: Expression
 
-  constructor(token: Token, operator: string, left: Expression) {
+  constructor (token: Token, operator: string, left: Expression) {
     this.token = token
     this.operator = operator
     this.left = left
   }
 
-  expressionNode() {}
+  expressionNode () {}
 
-  get node(): INode {
+  get node (): INode {
     return {
-      tokenLiteral() {
+      tokenLiteral () {
         return 'InfixExpression'
+      },
+    }
+  }
+}
+
+export class BooleanExpression implements Expression {
+  token: Token
+  value: boolean
+
+  constructor (token: Token, value: boolean) {
+    this.token = token
+    this.value = value
+  }
+
+  expressionNode () {}
+
+  TokenLiteral (): string {
+    return `${this.value}`
+  }
+
+  get node (): INode {
+    return {
+      tokenLiteral () {
+        return 'BooleanExpression'
       },
     }
   }

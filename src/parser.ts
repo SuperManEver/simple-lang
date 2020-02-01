@@ -12,6 +12,7 @@ import {
   IntegerLiteral,
   PrefixExpression,
   InfixExpression,
+  BooleanExpression,
 } from './ast'
 
 import {
@@ -33,6 +34,8 @@ import {
   NOT_EQ,
   LT,
   GT,
+  TRUE,
+  FALSE,
 } from './token'
 import Lexer from './lexer'
 
@@ -68,7 +71,7 @@ class Parser {
   prefixParseFns: { [k: string]: prefixParseFn | undefined } = {}
   infixParseFns: { [k: string]: infixParseFn | undefined } = {}
 
-  constructor(input: string) {
+  constructor (input: string) {
     this.lexer = new Lexer(input)
 
     this.registerPrefix(IDENT, this.parseIdentifier)
@@ -84,12 +87,14 @@ class Parser {
     this.registerInfix(NOT_EQ, this.parseInfixExpression)
     this.registerInfix(LT, this.parseInfixExpression)
     this.registerInfix(GT, this.parseInfixExpression)
+    this.registerPrefix(TRUE, this.parseBoolean)
+    this.registerPrefix(FALSE, this.parseBoolean)
 
     this.nextToken()
     this.nextToken()
   }
 
-  nextToken(): void {
+  nextToken (): void {
     this.curToken = this.peekToken
 
     if (this.lexer.hasMoreTokens()) {
@@ -97,7 +102,7 @@ class Parser {
     }
   }
 
-  parseProgram(): Program | null {
+  parseProgram (): Program | null {
     const program = new Program()
 
     while (!this.curTokenIs(EOF)) {
@@ -113,7 +118,7 @@ class Parser {
     return program
   }
 
-  parseStatement(): Statement | null {
+  parseStatement (): Statement | null {
     switch (this.curToken.type) {
       case LET:
         return this.parseLetStatement()
@@ -126,7 +131,7 @@ class Parser {
     }
   }
 
-  parseExpressionStatement(): ExpressionStatement {
+  parseExpressionStatement (): ExpressionStatement {
     const stmt = new ExpressionStatement()
     stmt.token = this.curToken
 
@@ -139,7 +144,7 @@ class Parser {
   }
 
   @bind
-  parsePrefixExpression(): Expression {
+  parsePrefixExpression (): Expression {
     const expression = new PrefixExpression(this.curToken, this.curToken.value)
 
     this.nextToken()
@@ -150,7 +155,7 @@ class Parser {
   }
 
   @bind
-  parseInfixExpression(left: Expression): Expression {
+  parseInfixExpression (left: Expression): Expression {
     const exp = new InfixExpression(this.curToken, this.curToken.value, left)
 
     const precendence = this.curPrecedence()
@@ -162,12 +167,12 @@ class Parser {
     return exp
   }
 
-  noPrefixParseFnError(token: Token) {
+  noPrefixParseFnError (token: Token) {
     const msg = `no prefix parse function for ${token.value} found`
     this.addError(msg)
   }
 
-  parseExpression(precendence: number): Expression {
+  parseExpression (precendence: number): Expression {
     const prefix = this.prefixParseFns[this.curToken.type]
 
     if (prefix) {
@@ -195,7 +200,7 @@ class Parser {
     return null
   }
 
-  parseReturnStatement(): ReturnStatement {
+  parseReturnStatement (): ReturnStatement {
     const stmt = new ReturnStatement()
 
     stmt.token = this.curToken
@@ -216,7 +221,7 @@ class Parser {
   }
 
   @bind
-  parseIntegerLiteral(): Expression {
+  parseIntegerLiteral (): Expression {
     const lit = new IntegerLiteral(this.curToken)
 
     const val: number = parseInt(this.curToken.value, 10)
@@ -231,7 +236,12 @@ class Parser {
     return lit
   }
 
-  parseLetStatement(): LetStatement {
+  @bind
+  parseBoolean (): BooleanExpression {
+    return new BooleanExpression(this.curToken, this.curTokenIs(TRUE))
+  }
+
+  parseLetStatement (): LetStatement {
     const stmt = new LetStatement()
 
     if (!this.expectPeek(IDENT)) {
@@ -256,15 +266,15 @@ class Parser {
     return stmt
   }
 
-  curTokenIs(t: TokenType): boolean {
+  curTokenIs (t: TokenType): boolean {
     return this.curToken.type === t
   }
 
-  peekTokenIs(t: TokenType): boolean {
+  peekTokenIs (t: TokenType): boolean {
     return this.peekToken.type === t
   }
 
-  expectPeek(t: TokenType): boolean {
+  expectPeek (t: TokenType): boolean {
     if (this.peekTokenIs(t)) {
       this.nextToken()
       return true
@@ -274,25 +284,25 @@ class Parser {
     }
   }
 
-  peekError(t: TokenType): void {
+  peekError (t: TokenType): void {
     const msg = `expected next token to be ${t}, got ${this.peekToken.type} instead`
 
     this.addError(msg)
   }
 
-  addError(msg: string) {
+  addError (msg: string) {
     this.errors.push(msg)
   }
 
-  registerPrefix(tokenType: TokenType, fn: prefixParseFn) {
+  registerPrefix (tokenType: TokenType, fn: prefixParseFn) {
     this.prefixParseFns[tokenType] = fn
   }
 
-  registerInfix(tokenType: TokenType, fn: infixParseFn) {
+  registerInfix (tokenType: TokenType, fn: infixParseFn) {
     this.infixParseFns[tokenType] = fn
   }
 
-  peekPrecedence(): number {
+  peekPrecedence (): number {
     const p = PRECEDENCES[this.peekToken.type]
 
     if (p) {
@@ -302,7 +312,7 @@ class Parser {
     return Precendence.LOWEST
   }
 
-  curPrecedence(): number {
+  curPrecedence (): number {
     const p = PRECEDENCES[this.curToken.type]
 
     if (p) {
