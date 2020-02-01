@@ -193,6 +193,9 @@ class Parser {
 
     expression.condition = this.parseExpression(Precendence.LOWEST)
 
+    /* move 'current' & 'peek' token few times
+     * if shape of statement satisfies required form
+     */
     if (!this.expectPeek(RPAREN)) {
       return null
     }
