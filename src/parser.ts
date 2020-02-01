@@ -13,6 +13,8 @@ import {
   PrefixExpression,
   InfixExpression,
   BooleanExpression,
+  IfExpression,
+  BlockStatement,
 } from './ast'
 
 import {
@@ -38,6 +40,10 @@ import {
   FALSE,
   LPAREN,
   RPAREN,
+  IF,
+  LBRACE,
+  RBRACE,
+  ELSE,
 } from './token'
 import Lexer from './lexer'
 
@@ -92,6 +98,7 @@ class Parser {
     this.registerPrefix(TRUE, this.parseBoolean)
     this.registerPrefix(FALSE, this.parseBoolean)
     this.registerPrefix(LPAREN, this.parseGroupedExpression)
+    this.registerPrefix(IF, this.parseIfExpression)
 
     this.nextToken()
     this.nextToken()
@@ -172,6 +179,60 @@ class Parser {
 
     this.noPrefixParseFnError(this.curToken)
     return null
+  }
+
+  @bind
+  parseIfExpression (): Expression {
+    const expression = new IfExpression(this.curToken)
+
+    if (!this.expectPeek(LPAREN)) {
+      return null
+    }
+
+    this.nextToken()
+
+    expression.condition = this.parseExpression(Precendence.LOWEST)
+
+    if (!this.expectPeek(RPAREN)) {
+      return null
+    }
+
+    if (!this.expectPeek(LBRACE)) {
+      return null
+    }
+
+    expression.consequence = this.parseBlockStatement()
+
+    if (this.peekTokenIs(ELSE)) {
+      this.nextToken()
+
+      if (!this.expectPeek(LBRACE)) {
+        return null
+      }
+
+      expression.alternative = this.parseBlockStatement()
+    }
+
+    return expression
+  }
+
+  @bind
+  parseBlockStatement (): BlockStatement {
+    const block = new BlockStatement(this.curToken)
+
+    this.nextToken()
+
+    while (!this.curTokenIs(RBRACE) && !this.curTokenIs(EOF)) {
+      const stmt = this.parseStatement()
+
+      if (stmt !== null) {
+        block.statements.push(stmt)
+      }
+
+      this.nextToken()
+    }
+
+    return block
   }
 
   @bind

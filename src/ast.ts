@@ -192,3 +192,39 @@ export class BooleanExpression implements Expression {
     }
   }
 }
+
+export class BlockStatement {
+  token: Token // the { token
+  statements: Statement[] = []
+
+  constructor (token: Token) {
+    this.token = token
+  }
+
+  statementNode (): void {}
+
+  TokenLiteral (): string {
+    return this.token.type
+  }
+}
+
+export class IfExpression implements Expression {
+  token: Token
+  condition: Expression
+  consequence: BlockStatement
+  alternative: BlockStatement
+
+  constructor (token: Token) {
+    this.token = token
+  }
+
+  expressionNode () {}
+
+  get node (): INode {
+    return {
+      tokenLiteral () {
+        return 'IfExpression'
+      },
+    }
+  }
+}
