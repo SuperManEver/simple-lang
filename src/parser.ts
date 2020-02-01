@@ -36,6 +36,8 @@ import {
   GT,
   TRUE,
   FALSE,
+  LPAREN,
+  RPAREN,
 } from './token'
 import Lexer from './lexer'
 
@@ -89,6 +91,7 @@ class Parser {
     this.registerInfix(GT, this.parseInfixExpression)
     this.registerPrefix(TRUE, this.parseBoolean)
     this.registerPrefix(FALSE, this.parseBoolean)
+    this.registerPrefix(LPAREN, this.parseGroupedExpression)
 
     this.nextToken()
     this.nextToken()
@@ -143,6 +146,34 @@ class Parser {
     return stmt
   }
 
+  parseExpression (precendence: number): Expression {
+    const prefix = this.prefixParseFns[this.curToken.type]
+
+    if (prefix) {
+      let leftExp = prefix()
+
+      while (
+        !this.peekTokenIs(SEMICOLON) &&
+        precendence < this.peekPrecedence()
+      ) {
+        const infix = this.infixParseFns[this.peekToken.type]
+
+        if (!infix) {
+          return leftExp
+        }
+
+        this.nextToken()
+
+        leftExp = infix(leftExp)
+      }
+
+      return leftExp
+    }
+
+    this.noPrefixParseFnError(this.curToken)
+    return null
+  }
+
   @bind
   parsePrefixExpression (): Expression {
     const expression = new PrefixExpression(this.curToken, this.curToken.value)
@@ -170,34 +201,6 @@ class Parser {
   noPrefixParseFnError (token: Token) {
     const msg = `no prefix parse function for ${token.value} found`
     this.addError(msg)
-  }
-
-  parseExpression (precendence: number): Expression {
-    const prefix = this.prefixParseFns[this.curToken.type]
-
-    if (prefix) {
-      let leftExp = prefix()
-
-      while (
-        !this.peekTokenIs(SEMICOLON) &&
-        precendence < this.peekPrecedence()
-      ) {
-        const infix = this.infixParseFns[this.peekToken.type]
-
-        if (!infix) {
-          return leftExp
-        }
-
-        this.nextToken()
-
-        leftExp = infix(leftExp)
-      }
-
-      return leftExp
-    }
-
-    this.noPrefixParseFnError(this.curToken)
-    return null
   }
 
   parseReturnStatement (): ReturnStatement {
@@ -239,6 +242,19 @@ class Parser {
   @bind
   parseBoolean (): BooleanExpression {
     return new BooleanExpression(this.curToken, this.curTokenIs(TRUE))
+  }
+
+  @bind
+  parseGroupedExpression (): Expression {
+    this.nextToken()
+
+    const exp = this.parseExpression(Precendence.LOWEST)
+
+    if (!this.expectPeek(RPAREN)) {
+      return null
+    }
+
+    return exp
   }
 
   parseLetStatement (): LetStatement {
