@@ -1,17 +1,6 @@
 import Parser from './src/parser'
 
-/*
-5 + 5;
-5 - 5;
-5 * 5;
-5 / 5;
-5 > 5;
-5 < 5;
-5 == 5;
-5 != 5;
-*/
-
-const input = 'fn(x, y) { x + y; }'
+const input = 'add(1, 2 * 3, 4 + 5);'
 
 const p = new Parser(input)
 
