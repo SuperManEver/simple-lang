@@ -362,6 +362,7 @@ class Parser {
     this.addError(msg)
   }
 
+  @bind
   parseReturnStatement(): ReturnStatement {
     const stmt = new ReturnStatement()
 
@@ -369,9 +370,9 @@ class Parser {
 
     this.nextToken()
 
-    // TODO: We're skipping the expressions until we
-    // encounter a semicolon
-    while (!this.curTokenIs(SEMICOLON)) {
+    stmt.returnValue = this.parseExpression(Precendence.LOWEST)
+
+    if (this.peekTokenIs(SEMICOLON)) {
       this.nextToken()
     }
 
@@ -416,6 +417,7 @@ class Parser {
     return exp
   }
 
+  @bind
   parseLetStatement(): LetStatement {
     const stmt = new LetStatement()
 
@@ -432,11 +434,13 @@ class Parser {
       return null
     }
 
-    // TODO: We're skipping the expressions until we
-    // encounter a semicolon
-    // while (!this.curTokenIs(SEMICOLON)) {
-    //   this.nextToken()
-    // }
+    this.nextToken()
+
+    stmt.value = this.parseExpression(Precendence.LOWEST)
+
+    if (this.peekTokenIs(SEMICOLON)) {
+      this.nextToken()
+    }
 
     return stmt
   }
